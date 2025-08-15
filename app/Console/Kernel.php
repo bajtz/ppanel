@@ -40,6 +40,8 @@ class Kernel extends ConsoleKernel
             $schedule->command(PruneOrphanedBackupsCommand::class)->everyThirtyMinutes();
         }
 
+        $schedule->command('free-servers:cleanup')->everyFiveMinutes();
+
         if (config('activity.prune_days')) {
             $schedule->command(PruneCommand::class, ['--model' => [ActivityLog::class]])->daily();
         }
