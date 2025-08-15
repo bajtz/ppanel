@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import Button from '@/components/elements/Button';
@@ -70,6 +71,13 @@ const FreeServerContainer = () => {
                     </Button>
                 </div>
             )}
+import React from 'react';
+import PageContentBlock from '@/components/elements/PageContentBlock';
+
+const FreeServerContainer = () => {
+    return (
+        <PageContentBlock title={'Free Server'}>
+            <p>Free server management coming soon.</p>
         </PageContentBlock>
     );
 };

@@ -26,11 +26,13 @@ class FreeServerController extends ClientApiController
                 'expires_at' => $server->expires_at,
                 'remaining' => Carbon::now()->diffInSeconds($server->expires_at, false),
                 'can_extend' => Carbon::now()->greaterThanOrEqualTo($server->expires_at->copy()->subSeconds(config('free-servers.extend_window'))),
+                'expires_at' => $server->expires_at,
             ];
         })->respond();
     }
 
     public function claim(Request $request, ServerCreationService $creationService)
+    public function claim(Request $request)
     {
         if (FreeServer::where('user_id', $request->user()->id)->exists()) {
             return $this->respondWithError('Free server already claimed.');
@@ -48,6 +50,11 @@ class FreeServerController extends ClientApiController
         $free = FreeServer::create([
             'user_id' => $request->user()->id,
             'server_id' => $server->id,
+        // @todo Actually provision a server for the user.
+        $expires = Carbon::now()->addSeconds(config('free-servers.default_duration'));
+
+        $free = FreeServer::create([
+            'user_id' => $request->user()->id,
             'expires_at' => $expires,
         ]);
 
@@ -58,11 +65,13 @@ class FreeServerController extends ClientApiController
                 'expires_at' => $server->expires_at,
                 'remaining' => Carbon::now()->diffInSeconds($server->expires_at, false),
                 'can_extend' => Carbon::now()->greaterThanOrEqualTo($server->expires_at->copy()->subSeconds(config('free-servers.extend_window'))),
+                'expires_at' => $server->expires_at,
             ];
         })->respond(201);
     }
 
     public function extend(Request $request, SuspensionService $suspensionService)
+    public function extend(Request $request)
     {
         $free = FreeServer::where('user_id', $request->user()->id)->firstOrFail();
 
@@ -85,6 +94,10 @@ class FreeServerController extends ClientApiController
                 'expires_at' => $server->expires_at,
                 'remaining' => Carbon::now()->diffInSeconds($server->expires_at, false),
                 'can_extend' => Carbon::now()->greaterThanOrEqualTo($server->expires_at->copy()->subSeconds(config('free-servers.extend_window'))),
+        return $this->fractal->item($free)->transformWith(function (FreeServer $server) {
+            return [
+                'id' => $server->id,
+                'expires_at' => $server->expires_at,
             ];
         })->respond();
     }
