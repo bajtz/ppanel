@@ -18,6 +18,7 @@ const fetcher = () =>
     http.get('/api/client/free-server').then((r) => r.data.data?.attributes ?? null);
 
 export default function FreeServerContainer() {
+const FreeServerContainer = () => {
     const { addError, clearFlashes } = useFlash();
     const { data, mutate } = useSWR<FreeServer | null>('/api/client/free-server', fetcher, {
         refreshInterval: 60000,
@@ -65,6 +66,14 @@ export default function FreeServerContainer() {
                 <div className='text-center'>
                     <p className='mb-2'>Server ID: {data.server_id}</p>
                     <p className='mb-4'>Time remaining: {formatTime(remaining)}</p>
+                <div className="text-center">
+                    <p className="mb-4">Claim your complimentary server instance.</p>
+                    <Button onClick={claim}>Claim Server</Button>
+                </div>
+            ) : (
+                <div className="text-center">
+                    <p className="mb-2">Server ID: {data.server_id}</p>
+                    <p className="mb-4">Time remaining: {formatTime(remaining)}</p>
                     <Button onClick={extend} disabled={!data.can_extend}>
                         Extend
                     </Button>
@@ -73,3 +82,15 @@ export default function FreeServerContainer() {
         </PageContentBlock>
     );
 }
+import React from 'react';
+import PageContentBlock from '@/components/elements/PageContentBlock';
+
+const FreeServerContainer = () => {
+    return (
+        <PageContentBlock title={'Free Server'}>
+            <p>Free server management coming soon.</p>
+        </PageContentBlock>
+    );
+};
+
+export default FreeServerContainer;
