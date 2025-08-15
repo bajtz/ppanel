@@ -6,6 +6,11 @@ use Pterodactyl\Http\Middleware\Admin\Servers\ServerInstalled;
 
 Route::get('/', [Admin\BaseController::class, 'index'])->name('admin.index');
 
+Route::group(['prefix' => 'free-servers'], function () {
+    Route::get('/', [Admin\FreeServerController::class, 'index'])->name('admin.free-servers.index');
+    Route::delete('/{freeServer:id}', [Admin\FreeServerController::class, 'delete'])->name('admin.free-servers.delete');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Location Controller Routes
