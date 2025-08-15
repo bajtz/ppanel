@@ -19,6 +19,12 @@ use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.index');
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 
+Route::prefix('/free-server')->group(function () {
+    Route::get('/', [Client\FreeServerController::class, 'index']);
+    Route::post('/', [Client\FreeServerController::class, 'claim']);
+    Route::post('/extend', [Client\FreeServerController::class, 'extend']);
+});
+
 Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
         Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
